@@ -13,7 +13,7 @@ const ProfilePage = () => {
     
         try {
             const compressedFile = await imageCompression(file, {
-                maxSizeMB: 0.1, // Adjust image size to 50kb
+                maxSizeMB: 0.05, // Adjust image size to 50kb
                 maxWidthOrHeight: 800, 
                 useWebWorker: true, // Recommended for better performance
             });

@@ -23,7 +23,7 @@ const MessageInput = () => {
     
         try {
             const compressedFile = await imageCompression(file, {
-                maxSizeMB: 0.10, 
+                maxSizeMB: 0.05, 
                 maxWidthOrHeight: 800, 
                 useWebWorker: true,
             });
