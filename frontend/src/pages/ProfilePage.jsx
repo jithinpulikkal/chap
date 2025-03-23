@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User } from "lucide-react";
+import imageCompression from 'browser-image-compression';
 
 const ProfilePage = () => {
     const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
@@ -9,16 +10,26 @@ const ProfilePage = () => {
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.readAsDataURL(file);
-
-        reader.onload = async () => {
-            const base64Image = reader.result;
-            setSelectedImage(base64Image);
-            await updateProfile({ profilePic: base64Image });
-        };
+    
+        try {
+            const compressedFile = await imageCompression(file, {
+                maxSizeMB: 0.1, // Adjust image size to 50kb
+                maxWidthOrHeight: 800, 
+                useWebWorker: true, // Recommended for better performance
+            });
+    
+            const reader = new FileReader();
+    
+            reader.readAsDataURL(compressedFile);
+    
+            reader.onload = async () => {
+                const base64Image = reader.result;
+                setSelectedImage(base64Image);
+                await updateProfile({ profilePic: base64Image });
+            };
+        } catch (error) {
+            console.error("Image compression error:", error);
+        }
     };
 
     return (
@@ -57,7 +68,7 @@ const ProfilePage = () => {
                             />
                         </label>
                     </div>
-                    <p className="text-sm text-zinc-400">{isUpdatingProfile ? "Uploading..." : "888"}</p>
+                    <p className="text-sm text-zinc-400">{isUpdatingProfile ? "Uploading..." : "Profile Picture"}</p>
                 </div>
 
                 {/* USER INFO */}

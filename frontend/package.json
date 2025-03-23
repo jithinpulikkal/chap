@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "axios": "^1.8.4",
+    "browser-image-compression": "^2.0.2",
     "chat": "file:..",
     "lucide-react": "^0.483.0",
     "react": "^19.0.0",
