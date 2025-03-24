@@ -64,11 +64,11 @@ export const useChatStore = create((set, get) => ({
 
     setSelectedUser: (user) => {
         set({ selectedUser: user });
-        if (get().unreadCounts[user._id]) {
-            set((state) => ({
-                unreadCounts: { ...state.unreadCounts, [user._id]: 0 },
-            })); // reset unread count when user is selected.
-        }
+        // if (get().unreadCounts[user._id]) {
+        //     set((state) => ({
+        //         unreadCounts: { ...state.unreadCounts, [user._id]: 0 },
+        //     })); // reset unread count when user is selected.
+        // }
     },
 
     // fetchUnreadCounts: async () => {
