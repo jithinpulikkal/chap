@@ -3,7 +3,7 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000/api" : "/";
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000/" : "/";
 
 export const useAuthStore = create((set, get) => ({
     authUser: null,
@@ -13,6 +13,10 @@ export const useAuthStore = create((set, get) => ({
     isCheckingAuth: true,
     onlineUsers: [],
     socket: null,
+    verificationInfo: {
+        email: null,
+        redirect: null,
+    },
 
     checkAuth: async () => {
         try {
@@ -33,10 +37,14 @@ export const useAuthStore = create((set, get) => ({
         set({ isSigningUp: true });
         try {
             const res = await axiosInstance.post("/auth/signup", data);
-            set({ authUser: res.data });
-            toast.success("Account created successfully");
-
-            get().connectSocket();
+            toast.success("Account created successfully.");
+            toast.success("Please verify your email.");
+            set({
+                verificationInfo: {
+                    email: res.data.email,
+                    redirect: res.data.redirect,
+                },
+            });
         } catch (error) {
             console.log("Error in signUp: ", error.response.data.message);
             toast.error("Error creating account");
@@ -55,6 +63,21 @@ export const useAuthStore = create((set, get) => ({
             get().connectSocket();
         } catch (error) {
             console.log("Error in login: ", error.response.data.message);
+            toast.error(error.response.data.message);
+        } finally {
+            set({ isLoggingIn: false });
+        }
+    },
+
+    verify: async (data) => {
+        set({ isLoggingIn: true });
+        try {
+            const res = await axiosInstance.post("/auth/verify-email", data);
+            set({ authUser: res.data });
+            toast.success("Verified successfully");
+            get().connectSocket();
+        } catch (error) {
+            console.log("Error in verification: ", error.response.data.message);
             toast.error(error.response.data.message);
         } finally {
             set({ isLoggingIn: false });

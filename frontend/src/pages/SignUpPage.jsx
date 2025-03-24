@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import AuthImagePattern from "../components/AuthImagePattern";
 import toast from "react-hot-toast";
 
@@ -13,7 +13,8 @@ const SignUpPage = () => {
         password: "",
     });
 
-    const { signUp, isSignUp } = useAuthStore();
+    const { signUp, isSignUp, verificationInfo } = useAuthStore();
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const validateForm = () => {
         if (!formData.fullName.trim()) return toast.error("Full name is required");
@@ -22,14 +23,29 @@ const SignUpPage = () => {
         if (!formData.password) return toast.error("Password is required");
         if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
 
-        return true
+        return true;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        // Make handleSubmit async
         e.preventDefault();
-        const success = validateForm()
-        if(success===true) signUp(formData)
+        const success = validateForm();
+        if (success === true) {
+            try {
+                await signUp(formData); // Await the signUp function call
+            } catch (error) {
+                console.error("Signup error:", error);
+            }
+        }
     };
+
+    useEffect(() => {
+        if (verificationInfo.redirect) {
+            navigate(verificationInfo.redirect, {
+                state: { email: verificationInfo.email },
+            }); // Navigate to the verification page
+        }
+    }, [verificationInfo, navigate]);
 
     return (
         <div className="min-h-screen grid lg:grid-cols-2">
@@ -40,7 +56,8 @@ const SignUpPage = () => {
                     <div className="text-center mb-8">
                         <div className="flex flex-col items-center gap-2 group">
                             <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                <MessageSquare className="size-6 text-primary" />
+                                {/* <MessageSquare className="size-6 text-primary" /> */}
+                                <img src="/favicon.png" alt="" className="w-40 text-primary" />
                             </div>
                             <h1 className="text-2xl font-bold mt-2">Create Account</h1>
                             <p className="text-base-content/60">Get started with your free account</p>

@@ -65,3 +65,25 @@ export const sendMessage = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+// export const unreadCounts = async (req, res) => {
+//     try {
+//         const userId = req.user._id;
+//         const unreadCounts = {};
+//         const users = await User.find({ _id: { $ne: userId } }); // find all users except current user.
+
+//         for (const user of users) {
+//             const count = await Message.countDocuments({
+//                 senderId: user._id,
+//                 receiverId: userId,
+//                 seen: false,
+//             });
+//             unreadCounts[user._id] = count;
+//         }
+
+//         res.json(unreadCounts);
+//     } catch (error) {
+//         console.error("Error fetching unread counts: ", error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// };

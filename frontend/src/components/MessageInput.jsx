@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 import { X, Image, Send } from "lucide-react";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 
 import { useChatStore } from "../store/useChatStore";
 
@@ -15,25 +15,24 @@ const MessageInput = () => {
     const handleImageChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-    
+
         if (!file.type.startsWith("image/")) {
             toast.error("Please select an image file");
             return;
         }
-    
+
         try {
             const compressedFile = await imageCompression(file, {
-                maxSizeMB: 0.05, 
-                maxWidthOrHeight: 800, 
+                maxSizeMB: 0.05,
+                maxWidthOrHeight: 800,
                 useWebWorker: true,
             });
-    
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
             };
             reader.readAsDataURL(compressedFile);
-    
         } catch (error) {
             console.error("Image compression error:", error);
             toast.error("Error compressing image. Please try again.");
@@ -59,7 +58,6 @@ const MessageInput = () => {
             setImagePreview(null);
 
             if (fileInputRef.current) fileInputRef.current.value = "";
-            
         } catch (error) {
             console.error("Failed to send message: ", error);
         }
@@ -103,13 +101,15 @@ const MessageInput = () => {
                     />
                     <button
                         type="button"
-                        className={`hidden sm:flex btn btn-circle ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+                        className={`btn-sm sm:btn-md sm:flex btn btn-circle ${
+                            imagePreview ? "text-emerald-500" : "text-zinc-400"
+                        }`}
                         onClick={() => fileInputRef.current?.click()}
                     >
                         <Image size={20} />
                     </button>
                 </div>
-                <button type="submit" className="btn btn-circle" disabled={!text.trim() && !imagePreview}>
+                <button type="submit" className="btn btn-circle btn-sm sm:btn-md" disabled={!text.trim() && !imagePreview}>
                     <Send size={22} />
                 </button>
             </form>

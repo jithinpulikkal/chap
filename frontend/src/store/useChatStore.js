@@ -5,6 +5,7 @@ import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create((set, get) => ({
     messages: [],
+    // unreadCounts: {},
     users: [],
     selectedUser: null,
     isUserloading: false,
@@ -61,5 +62,21 @@ export const useChatStore = create((set, get) => ({
         socket.off("newMessage");
     },
 
-    setSelectedUser: (selectedUser) => set({ selectedUser }),
+    // setSelectedUser: (user) => {
+    //     set({ selectedUser: user });
+    //     if (get().unreadCounts[user._id]) {
+    //         set((state) => ({
+    //             unreadCounts: { ...state.unreadCounts, [user._id]: 0 },
+    //         })); // reset unread count when user is selected.
+    //     }
+    // },
+
+    // fetchUnreadCounts: async () => {
+    //     try {
+    //         const res = await axiosInstance.get("/messages/unreadCounts");
+    //         set({ unreadCounts: res.data });
+    //     } catch (error) {
+    //         console.log("Error fetching unread counts: ", error);
+    //     }
+    // },
 }));
